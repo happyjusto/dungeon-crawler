@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dungeon Explorer</title>
+  <style>
+    body { background: #111; color: #0f0; font-family: monospace; padding: 20px; }
+    button { margin: 5px; padding: 10px; font-size: 16px; }
+    #output { white-space: pre-wrap; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Dungeon Explorer</h1>
+  <div id="output"></div>
+  <div id="buttons"></div>
+
+  <script>
+    // === Game state ===
+    let maxHealth = 10;
+    let health = maxHealth;
+    let coins = 0;
+    let healthCost = 4;
+    let roomsExplored = 0;
+    let highScore = localStorage.getItem("highScore") || 0;
+
+    const output = document.getElementById("output");
+    const buttons = document.getElementById("buttons");
+
+    function show(text) {
+      output.textContent = text;
+    }
+
+    function setButtons(options) {
+      buttons.innerHTML = "";
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt.label;
+        btn.onclick = opt.action;
+        buttons.appendChild(btn);
+      });
+    }
+
+    function welcome() {
+      show(
+`Welcome to the dungeon!
+
+About the game:
+- After round 20, monster damage doubles, triple after 30, etc.
+- Trap damage increases every 10 rounds.
+- Treasure rooms give more coins every 10 rounds.
+- Upgrading health increases max by 2 and fully heals.
+
+High Score: ${highScore}`
+      );
+      setButtons([
+        { label: "Start Exploring", action: startGame },
+        { label: "Quit", action: () => show("Goodbye!") }
+      ]);
+    }
+
+    function startGame() {
+      maxHealth = 10;
+      health = maxHealth;
+      coins = 0;
+      healthCost = 4;
+      roomsExplored = 0;
+      nextRoom();
+    }
+
+    function nextRoom() {
+      if (health <= 0) {
+        gameOver();
+        return;
+      }
+
+      roomsExplored++;
+      const room = Math.floor(Math.random() * 4);
+
+      if (room === 0) {
+        show(`You encounter a monster!\n\nPress "Roll Dice" to fight.`);
+        setButtons([{ label: "Roll Dice", action: fightMonster }]);
+      } else if (room === 1) {
+        const maxCoinRoll = Math.floor(roomsExplored / 10) + 3;
+        const coinRoll = Math.ceil(Math.random() * maxCoinRoll);
+        coins += coinRoll;
+        show(`You found a treasure room!\nYou gain ${coinRoll} coin(s)!\n\n${status()}`);
+        nextChoice();
+      } else if (room === 2) {
+        const healthLoss = 3 + Math.floor(roomsExplored / 10);
+        health -= healthLoss;
+        show(`You found a trap!\nYou lose ${healthLoss} health.\n\n${status()}`);
+        nextChoice();
+      } else {
+        show(`You found an empty room!\n\n${status()}`);
+        nextChoice();
+      }
+    }
+
+    function fightMonster() {
+      const playerRoll = Math.ceil(Math.random() * 6);
+      const monsterRoll = Math.ceil(Math.random() * 6);
+      let log = `You rolled: ${playerRoll}\nMonster rolled: ${monsterRoll}\n`;
+
+      if (playerRoll === monsterRoll) {
+        log += "\nIt's a tie! Roll again.";
+        show(log);
+      } else if (playerRoll > monsterRoll) {
+        const coinGain = playerRoll - monsterRoll; 
+        coins += coinGain;
+        log += `\nYou win! You gain ${coinGain} coin(s).\n\n` + status();
+        show(log);
+        nextChoice();
+      } else {
+        let damage = (monsterRoll - playerRoll);
+        if (roomsExplored > 10) {
+          damage *= Math.floor(roomsExplored / 10);
+        }
+        health -= damage;
+        log += `\nYou lose! You lose ${damage} health.\n\n` + status();
+        show(log);
+        nextChoice();
+      }
+    }
+
+    function nextChoice() {
+      if (health <= 0) {
+        gameOver();
+        return;
+      }
+      setButtons([
+        { label: "Keep Exploring", action: nextRoom },
+        { label: `Upgrade Health (${healthCost} coins)`, action: upgradeHealth },
+        { label: "Quit", action: gameOver }
+      ]);
+    }
+
+    function upgradeHealth() {
+      if (coins >= healthCost) {
+        coins -= healthCost;
+        maxHealth += 2;
+        health = maxHealth;
+        healthCost += 2;
+        show(`Health upgraded! Max health is now ${maxHealth}.\n\n${status()}`);
+      } else {
+        show(`Not enough coins!\n\n${status()}`);
+      }
+      nextChoice();
+    }
+
+    function status() {
+      return `Health: ${health}/${maxHealth}\nCoins: ${coins}\nRooms Explored: ${roomsExplored}`;
+    }
+
+    function gameOver() {
+      let end = `You died! You explored ${roomsExplored} rooms.\n`;
+      if (roomsExplored > highScore) {
+        highScore = roomsExplored;
+        localStorage.setItem("highScore", highScore);
+        end += "New High Score!\n";
+      } else {
+        end += `High Score: ${highScore}\n`;
+      }
+      show(end);
+      setButtons([
+        { label: "Play Again", action: welcome },
+        { label: "Quit", action: () => show("Goodbye!") }
+      ]);
+    }
+
+    // === Start ===
+    welcome();
+  </script>
+</body>
+</html>
