@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Dungeon Explorer</title>
   <style>
-    body { background: #111; color: #0f0; font-family: monospace; padding: 20px; }
-    button { margin: 5px; padding: 10px; font-size: 16px; }
-    #output { white-space: pre-wrap; margin-bottom: 20px; }
+    body {
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      padding: 20px;
+      text-align: center;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #output {
+      white-space: pre-wrap;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
+
 <body>
   <h1>Dungeon Explorer</h1>
   <div id="output"></div>
@@ -42,7 +59,7 @@
 
     function welcome() {
       show(
-`Welcome to the dungeon!
+        `Welcome to the dungeon!
 
 About the game:
 - After round 20, monster damage doubles, triple after 30, etc.
@@ -53,8 +70,8 @@ About the game:
 High Score: ${highScore}`
       );
       setButtons([
-        { label: "Start Exploring", action: startGame },
-        { label: "Quit", action: () => show("Goodbye!") }
+        {label: "Start Exploring", action: startGame},
+        {label: "Quit", action: () => show("Goodbye!")}
       ]);
     }
 
@@ -78,7 +95,7 @@ High Score: ${highScore}`
 
       if (room === 0) {
         show(`You encounter a monster!\n\nPress "Roll Dice" to fight.`);
-        setButtons([{ label: "Roll Dice", action: fightMonster }]);
+        setButtons([{label: "Roll Dice", action: fightMonster}]);
       } else if (room === 1) {
         const maxCoinRoll = Math.floor(roomsExplored / 10) + 3;
         const coinRoll = Math.ceil(Math.random() * maxCoinRoll);
@@ -105,7 +122,7 @@ High Score: ${highScore}`
         log += "\nIt's a tie! Roll again.";
         show(log);
       } else if (playerRoll > monsterRoll) {
-        const coinGain = playerRoll - monsterRoll; 
+        const coinGain = playerRoll - monsterRoll;
         coins += coinGain;
         log += `\nYou win! You gain ${coinGain} coin(s).\n\n` + status();
         show(log);
@@ -128,9 +145,9 @@ High Score: ${highScore}`
         return;
       }
       setButtons([
-        { label: "Keep Exploring", action: nextRoom },
-        { label: `Upgrade Health (${healthCost} coins)`, action: upgradeHealth },
-        { label: "Quit", action: gameOver }
+        {label: "Keep Exploring", action: nextRoom},
+        {label: `Upgrade Health (${healthCost} coins)`, action: upgradeHealth},
+        {label: "Quit", action: gameOver}
       ]);
     }
 
@@ -148,7 +165,7 @@ High Score: ${highScore}`
     }
 
     function status() {
-      return `Health: ${health}/${maxHealth}\nCoins: ${coins}\nRooms Explored: ${roomsExplored}`;
+      return `Health: ${health}/${maxHealth} | Coins: ${coins}\nRooms Explored: ${roomsExplored}`;
     }
 
     function gameOver() {
@@ -162,8 +179,8 @@ High Score: ${highScore}`
       }
       show(end);
       setButtons([
-        { label: "Play Again", action: welcome },
-        { label: "Quit", action: () => show("Goodbye!") }
+        {label: "Play Again", action: welcome},
+        {label: "Quit", action: () => show("Goodbye!")}
       ]);
     }
 
@@ -171,4 +188,5 @@ High Score: ${highScore}`
     welcome();
   </script>
 </body>
+
 </html>
