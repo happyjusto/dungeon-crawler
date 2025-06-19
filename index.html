@@ -62,10 +62,10 @@
         `Welcome to the dungeon!
 
 About the game:
-- After round 20, monster damage doubles, triple after 30, etc.
-- Trap damage increases every 10 rounds.
-- Treasure rooms give more coins every 10 rounds.
-- Upgrading health increases max by 2 and fully heals.
+After round 20, monster damage doubles, triple after 30, etc.
+Trap damage increases every 10 rounds.
+Treasure rooms give more coins every 10 rounds.
+Upgrading health increases max by 2 and fully heals.
 
 High Score: ${highScore}`
       );
@@ -97,7 +97,7 @@ High Score: ${highScore}`
         show(`You encounter a monster!\n\nPress "Roll Dice" to fight.`);
         setButtons([{label: "Roll Dice", action: fightMonster}]);
       } else if (room === 1) {
-        const maxCoinRoll = Math.floor(roomsExplored / 10) + 3;
+        const maxCoinRoll = Math.floor(roomsExplored / 10)*2 + 3;
         const coinRoll = Math.ceil(Math.random() * maxCoinRoll);
         coins += coinRoll;
         show(`You found a treasure room!\nYou gain ${coinRoll} coin(s)!\n\n${status()}`);
