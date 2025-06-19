@@ -124,7 +124,7 @@ High Score: ${highScore}`
       } else if (playerRoll > monsterRoll) {
         const coinGain = playerRoll - monsterRoll;
         if (roomsExplored > 10) {
-          coinGain = (playerRoll - monsterRoll)*Math.floor(roomsExpolred / 10);
+          coinGain = (playerRoll - monsterRoll)*Math.floor(roomsExplored / 10);
         }
         coins += coinGain;
         log += `\nYou win! You gain ${coinGain} coin(s).\n\n` + status();
