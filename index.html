@@ -122,9 +122,9 @@ High Score: ${highScore}`
         log += "\nIt's a tie! Roll again.";
         show(log);
       } else if (playerRoll > monsterRoll) {
-        const coinGain = playerRoll - monsterRoll;
+        let coinGain = playerRoll - monsterRoll;
         if (roomsExplored > 10) {
-          coinGain = (playerRoll - monsterRoll)*Math.floor(roomsExplored / 10);
+          coinGain = (playerRoll - monsterRoll) * Math.floor(roomsExplored / 10);
         }
         coins += coinGain;
         log += `\nYou win! You gain ${coinGain} coin(s).\n\n` + status();
